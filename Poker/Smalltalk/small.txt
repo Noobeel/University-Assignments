@@ -1,0 +1,499 @@
+// Function Declaration: func_name: args
+// Use Pharo for executing code. See: https://pharo.org/
+
+max_num: input
+	| temp |
+	temp := 0.
+	input do: [ :each | (temp = 0) 
+					ifTrue: [ temp := (each allButLast)asInteger ]
+					ifFalse: [ (each allButLast)asInteger > temp 
+								ifTrue: [ temp := (each allButLast)asInteger ]
+							 ]
+			  ].
+	^ temp
+
+evaluate: hand
+	| converted_hand obj resultHand no_win temp |
+	obj := self class new.
+	converted_hand := obj convert_to_cards: hand.
+	
+	temp := Array new.
+	no_win := OrderedCollection new.
+	
+	resultHand := obj check_royal_flush: converted_hand.
+	resultHand ifNotNil: [ ^ resultHand ]. 
+	resultHand ifNil: [ resultHand := obj check_straight_flush: converted_hand ].
+	resultHand ifNotNil: [ ^ resultHand ].
+	resultHand ifNil: [ resultHand := obj check_four: converted_hand ].
+	resultHand ifNotNil: [ ^ resultHand ].
+	resultHand ifNil: [ resultHand := obj check_full_house: converted_hand ].
+	resultHand ifNotNil: [ ^ resultHand ].
+	resultHand ifNil: [ resultHand := obj check_flush: converted_hand ].
+	resultHand ifNotNil: [ ^ resultHand ].
+	resultHand ifNil: [ resultHand := obj check_straight: converted_hand ].
+	resultHand ifNotNil: [ ^ resultHand ].
+	resultHand ifNil: [ resultHand := obj check_three: converted_hand ].
+	resultHand ifNotNil: [ ^ resultHand ].
+	resultHand ifNil: [ resultHand := obj check_two_pair: converted_hand ].
+	resultHand ifNotNil: [ ^ resultHand ].
+	resultHand ifNil: [ resultHand := obj check_pair: converted_hand ].
+	resultHand ifNotNil: [ ^ resultHand ].
+	resultHand ifNil: [ no_win add: (temp := Array with: (converted_hand last)).
+					    no_win add: 0. ^ no_win 
+					  ].
+
+deal: input
+	| first_hand second_hand first_eval second_eval pool obj max_first max_second temp1 temp2 |
+	obj := self class new.
+	
+	pool := input copyFrom: 5 to: input size.
+	first_hand := {(input at: 1).
+	(input at: 3)} , pool.
+	second_hand := {(input at: 2).
+	(input at: 4)} , pool.
+
+	first_eval := obj evaluate: first_hand.
+	second_eval := obj evaluate: second_hand.
+
+	temp1 := (first_eval at: 1) sort: [ :a :b | (a allButLast)asInteger < (b allButLast)asInteger ].
+	temp2 := (second_eval at: 1) sort: [ :a :b | (a allButLast)asInteger < (b allButLast)asInteger ].
+
+	(first_eval at: 2) = (second_eval at: 2)
+		ifTrue: [ max_first := (obj max_num: (first_eval at: 1)).
+				  max_second := (obj max_num: (second_eval at: 1)).
+				  [ ((temp1 size) ~= 0) & ((temp2 size) ~= 0) & (max_first = max_second) ] 
+				  		whileTrue: [
+								temp1:= temp1 copyFrom: 1 to: ((temp1 size)-1).
+								temp2:= temp2 copyFrom: 1 to: ((temp2 size)-1).
+								max_first := (obj max_num: temp1). 
+								max_second := (obj max_num: temp2).
+							].
+																			
+							(max_first = 14) & ((first_eval at: 2) = 8) ifTrue: [ max_first := 1 ].
+							(max_second = 14) & ((second_eval at: 2) = 8) ifTrue: [ max_second := 1 ].
+							max_first > max_second ifTrue: [ ^ (obj convert_to_one: (first_eval at: 1)) ].
+							max_first < max_second ifTrue: [ ^ (obj convert_to_one: (second_eval at: 1)) ].
+							((temp1 isEmpty) & (temp2 isEmpty) & (max_first = max_second)) 
+									ifTrue: [ ^ (obj convert_to_one: (first_eval at: 1)) ].
+				]		
+		ifFalse: [(first_eval at: 2) > (second_eval at: 2) 
+						ifTrue: [ ^ (obj convert_to_one: (first_eval at: 1)) ]
+						ifFalse: [ ^ (obj convert_to_one: (second_eval at: 1)) ]
+				 ].
+
+convert_to_one: hand
+	| temp |
+	temp := hand asOrderedCollection.
+	temp do: [ :each | (each allButLast) = '14'
+				ifTrue: [temp add: ('1', ((each last)asString))]
+			 ].
+	^ (temp select: [ :a | a ~= ('14', ((a last)asString)) ])asArray
+
+convert_to_cards: hand
+	| result deck |
+				
+	deck := Array withAll: 
+		  #('14C' '2C' '3C' '4C' '5C' '6C' '7C' 
+			'8C' '9C' '10C' '11C' '12C' '13C'
+			'14D' '2D' '3D' '4D' '5D' '6D' '7D'
+			'8D' '9D' '10D' '11D' '12D' '13D'
+			'14H' '2H' '3H' '4H' '5H' '6H' '7H'				
+			'8H' '9H' '10H' '11H' '12H' '13H'
+			'14S' '2S' '3S' '4S' '5S' '6S' '7S'
+			'8S' '9S' '10S' '11S' '12S' '13S').
+											
+	result := SortedCollection  new
+				 sortBlock: [ :a :b | (a allButLast) asInteger <= (b allButLast) asInteger ].
+	hand do: [ :card | result add: (deck at: card) ].
+
+	^ result
+
+check_two_pair: input
+	| result hand_rank converted_hand temp iter_ranks |
+	converted_hand := input.
+	
+	hand_rank := OrderedCollection new.
+	converted_hand do: [ :each | hand_rank add: (each allButLast) asString ].
+
+	iter_ranks := Dictionary new.
+	hand_rank
+		do: [ :each | (iter_ranks keys includes: each)
+				ifTrue: [ iter_ranks at: each put: (iter_ranks at: each) + 1 ]
+				ifFalse: [ iter_ranks at: each put: 1 ]
+			].
+
+	iter_ranks keys do: [ :each | ((iter_ranks at: each) < 2)
+							ifTrue: [ iter_ranks removeKey: each ] 
+						].
+
+	temp := OrderedCollection new.
+	converted_hand do: [ :each | (iter_ranks includesKey: (each allButLast)asString)
+							ifTrue: [ temp add: each ]
+					   ].
+
+	((temp size) < 4) ifTrue: [ ^ nil ].
+	result := OrderedCollection new.
+	result add: (temp copyFrom: ((temp size) - 3) to: temp size)asArray.
+	result add: 2.
+	
+	^ result
+
+check_three: input
+	| result hand_rank converted_hand temp max_three iter_ranks i |
+	converted_hand := input.
+	
+	hand_rank := OrderedCollection new.
+	converted_hand do: [ :each | hand_rank add: (each allButLast) asString ].
+	
+	iter_ranks := Dictionary new.
+	hand_rank
+		do: [ :each | (iter_ranks keys includes: each)
+				ifTrue: [ iter_ranks at: each put: (iter_ranks at: each) + 1 ]
+				ifFalse: [ iter_ranks at: each put: 1 ] 
+			].
+
+	iter_ranks
+		keysDo: [ :each | (iter_ranks at: each) < 3
+					ifTrue: [ iter_ranks removeKey: each ]
+				].
+	
+	max_three := 0.
+	iter_ranks keysDo: [ :each | (iter_ranks at: each) = 3
+							ifTrue: [ max_three < (each asInteger)
+								ifTrue: [ max_three := (each asInteger) ]
+							]
+					   ].
+   
+	temp := OrderedCollection new.
+	i := 0.
+	(max_three = 0) ifTrue: [ ^ nil ].
+
+	converted_hand do: [ :each | i < 3
+							ifTrue: [ (each allButLast)asInteger = max_three
+								ifTrue: [ temp add: each. i := i + 1 ]
+							]
+					   ].
+
+	result := OrderedCollection new.
+	result add: (temp)asArray.
+	result add: 3. 
+	
+	^ result 
+
+check_straight_flush: input
+	| result hand_rank hand_suit single_ranks single_hands converted_hand temp ranks duplicate suits |
+	converted_hand := input.
+	
+	hand_rank := OrderedCollection new.
+	converted_hand do: [ :each | hand_rank add: (each allButLast) asString ].
+	
+	hand_suit := OrderedCollection new.
+	converted_hand do: [ :each | hand_suit add: (each last) asString ].
+	
+	single_ranks := OrderedCollection new.
+	hand_rank do: [ :each | (single_ranks occurrencesOf: each) = 0
+						ifTrue: [ single_ranks add: each ]
+				  ]. 
+
+	single_hands := OrderedCollection new.
+	hand_suit do: [ :each | (single_hands occurrencesOf: each) = 0
+						ifTrue: [ single_hands add: each ]
+				  ].
+
+	result := OrderedCollection new.
+	single_hands do: [ :each | single_ranks reverseDo: [ :num | temp := OrderedCollection new.
+					   (converted_hand occurrencesOf: (num, each)) = 1
+							ifTrue: [ temp add: num, each.
+							          (converted_hand occurrencesOf: ((num)asInteger - 1)asString, each) = 1
+								ifTrue: [ temp add: ((num)asInteger - 1)asString, each.
+										  (converted_hand occurrencesOf: ((num)asInteger - 2)asString, each) = 1
+									ifTrue: [ temp add: ((num)asInteger - 2)asString, each.
+											  (converted_hand occurrencesOf: ((num)asInteger - 3)asString, each) = 1
+										ifTrue: [ temp add:((num)asInteger - 3)asString, each.
+												  (converted_hand occurrencesOf: ((num)asInteger - 4)asString, each) = 1
+											ifTrue: [ temp add: ((num)asInteger - 4)asString, each.
+													  result add: (temp)asArray. result add: 8. ^ result
+													]
+							     				]
+						     				]
+						  				]
+					   				]
+					  		].
+					 ].
+
+	ranks := #(2 3 4 5 14).
+	suits := OrderedCollection new.
+	result := OrderedCollection new.
+	temp := OrderedCollection new.
+
+	converted_hand do: [ :cards | (ranks includes: ((cards allButLast)asInteger))
+							ifTrue: [ duplicate := false. 
+									  temp do: [ :each | (each allButLast)asInteger = ((cards allButLast)asInteger)
+													ifTrue: [ duplicate := true. ]
+											   ].
+									  duplicate ifFalse: [ temp add: cards ]
+									]
+					   ].
+
+	temp do: [ :each | (suits includes: (each last)asString) 
+					ifFalse: [ suits add: ((each last)asString)]
+			 ].
+	
+	((suits size) ~= 1) ifTrue: [ ^ nil ].
+	((temp size) = 5) ifTrue: [ result add: (temp)asArray.
+								result add: 8.
+								^ result
+							  ].
+		
+	^ nil
+
+check_straight: input
+	| result converted_hand count previous temp ranks duplicate |
+	
+	converted_hand := input.
+	
+	count := 0.
+	previous := 0.
+	temp := OrderedCollection new.
+	result := OrderedCollection new.
+	converted_hand reverseDo: [ :each | previous = 0
+									ifTrue: [ previous := each allButLast asInteger.
+											  count := count + 1. temp add: each
+											]
+									ifFalse: [ (each allButLast) asInteger = (previous - 1)
+													ifTrue: [ temp add: each. 
+															  count := count + 1. 
+															  previous := (each allButLast) asInteger. 
+															  count = 5
+														 		ifTrue: [ result add: temp asArray.
+																 		  result add: 4.
+																	  	  ^ result
+																		]
+															]
+													ifFalse: [ each allButLast asInteger = previous
+														 		ifFalse: [ temp := OrderedCollection new.
+																 		   temp add: each.
+																		   previous := each allButLast asInteger.
+																		   count := 1
+																		 ]
+															 ]
+											 ]
+							  ].
+
+	ranks := #(2 3 4 5 14).
+	temp := OrderedCollection new.
+	result := OrderedCollection new.
+
+	converted_hand
+		do: [ :each | (ranks includes: ((each allButLast)asInteger))
+				ifTrue: [ duplicate := false.
+						  temp do: [ :cards | ((cards allButLast) asInteger) = ((each allButLast) asInteger)
+								ifTrue: [ duplicate := true ]
+								   ].
+						  duplicate
+						  	ifFalse: [ temp add: each ]
+						]
+			].
+
+	((temp size) = 5)
+		ifTrue: [ result add: (temp)asArray.
+				  result add: 4.
+				  ^ result
+				].
+	
+	^ nil
+
+check_royal_flush: input
+	| result hand_suit single_hands converted_hand temp |
+	
+	converted_hand := input.
+	
+	hand_suit := OrderedCollection new.
+	converted_hand do: [ :each | hand_suit add: (each last) asString ].
+
+	single_hands := OrderedCollection new.
+	hand_suit do: [ :each | (single_hands occurrencesOf: each) = 0
+						ifTrue: [ single_hands add: each ]
+				  ].
+						
+	result := OrderedCollection new.
+	temp := OrderedCollection new.
+	single_hands do: [ :each | (converted_hand occurrencesOf: ('10',each)) = 1
+						ifTrue: [ temp add: ('10',each).
+								  (converted_hand occurrencesOf: ('11',each)) = 1 
+							ifTrue: [ temp add: ('11',each).
+									  (converted_hand occurrencesOf: ('12',each)) = 1 
+								ifTrue: [ temp add: ('12',each).
+										  (converted_hand occurrencesOf: ('13',each)) = 1 
+									ifTrue: [ temp add: ('13',each).
+											  (converted_hand occurrencesOf: ('14',each)) = 1 
+										ifTrue: [ temp add: ('1',each).
+												  result add: (temp)asArray.
+												  result add: 9.
+												  ^ result
+												]
+								  			]
+							  			]
+									]
+								] 
+				 	].
+
+	^ nil
+
+check_pair: input
+	| result hand_rank converted_hand max_two iter_ranks i temp|
+	
+	converted_hand := input.
+	
+	hand_rank := OrderedCollection new.
+	converted_hand do: [ :each | hand_rank add: (each allButLast) asString ].
+
+	iter_ranks := Dictionary new.
+	hand_rank do: [ :each | (iter_ranks keys includes: each)
+						ifTrue: [ iter_ranks at: each put: (iter_ranks at: each) + 1 ]
+						ifFalse: [ iter_ranks at: each put: 1 ]
+				  ].
+	
+	iter_ranks keysDo: [ :each | (iter_ranks at: each) < 2
+							ifTrue: [ iter_ranks removeKey: each ]
+					   ].
+	
+	max_two := '0'.
+	iter_ranks keysDo: [ :each | (iter_ranks at: each) = 2
+							ifTrue: [ (max_two)asInteger < (each)asInteger
+										ifTrue: [ max_two := each ]
+									]
+					   ].
+	
+	temp := OrderedCollection new.
+	max_two = '0' ifTrue: [ ^ nil ].
+
+	i := 0.
+	converted_hand do: [ :each | i < 2
+							ifTrue: [ (each allButLast)asString = max_two
+										ifTrue: [ temp add: each. i := i + 1 ]
+									]
+					   ].
+	
+	result := OrderedCollection new.
+	result add: (temp)asArray.
+	result add: 1. 
+	
+	^ result
+
+
+check_full_house: input
+	| result hand_rank converted_hand iter_ranks max_two max_three temp i |
+	
+	converted_hand := input.
+	
+	hand_rank := OrderedCollection new.
+	converted_hand do: [ :each | hand_rank add: each allButLast asString ].
+
+	iter_ranks := Dictionary new.
+	hand_rank do: [ :each | (iter_ranks keys includes: each)
+						ifTrue: [ iter_ranks at: each put: (iter_ranks at: each) + 1 ]
+						ifFalse: [ iter_ranks at: each put: 1 ]
+				  ].
+
+	iter_ranks keys do: [ :each | (iter_ranks at: each) < 2
+							ifTrue: [ iter_ranks removeKey: each ]
+						].
+	
+	max_two := '0'.
+	max_three := '0'.
+	iter_ranks keysDo: [ :each | (iter_ranks at: each) = 2
+							ifTrue: [ (max_two)asInteger < (each)asInteger
+									ifTrue: [ max_two := each ]
+									]
+							ifFalse: [ (max_three)asInteger < (each)asInteger 
+										ifTrue: [ max_three := each ]
+									 ]
+					   ].
+	
+	temp := OrderedCollection new.
+	i := 0.
+	(iter_ranks size < 2) ifTrue: [ ^ nil ].
+	(max_three = '0') & (max_two = '0') ifTrue: [ ^ nil ].
+	(max_three = '0') ifTrue: [ ^ nil ].
+	(max_two = '0') & (max_three ~= '0') ifTrue: [ (iter_ranks removeKey: max_three). 
+													max_two := (iter_ranks keys at: (iter_ranks size))
+												 ].
+
+	converted_hand do: [ :each | i < 3
+							ifTrue: [ (each allButLast)asString = max_three
+										ifTrue: [ temp add: each. i := i + 1 ]
+									]
+					   ].
+
+	i := 0.
+	converted_hand do: [ :each | i < 2
+							ifTrue: [ (each allButLast)asString = max_two
+										ifTrue: [ temp add: each. i := i + 1 ]
+									]
+					   ].
+	
+	result := OrderedCollection new.
+	result add: (temp)asArray.
+	result add: 6. 
+	
+	^ result
+
+
+check_four: input
+	| result hand_rank single_ranks converted_hand val temp |
+	
+	converted_hand := input.
+	
+	hand_rank := OrderedCollection new.
+	converted_hand do: [ :each | hand_rank add: (each allButLast) asString ].
+	
+	single_ranks := OrderedCollection new.
+	hand_rank do: [ :each | (single_ranks occurrencesOf: each) = 0
+						ifTrue: [ single_ranks add: each ]
+				  ]. 
+	
+	temp := OrderedCollection new.
+	result := OrderedCollection new.
+	single_ranks do: [ :num | (hand_rank occurrencesOf: num) = 4 
+						ifTrue: [ val := num.
+								  converted_hand do: [ :each | (each allButLast) = val 
+														ifTrue: [ temp add: each ] 
+													 ]. 
+								  result add: (temp)asArray.
+								  result add: 7.
+								  ^ result
+								]
+					 ].
+		
+	^ nil
+
+check_flush: input
+	| result hand_suit single_hands converted_hand count temp |
+	
+	converted_hand := input.
+	
+	hand_suit := OrderedCollection new.
+	converted_hand do: [ :each | hand_suit add: (each last) asString ].
+	
+	single_hands := OrderedCollection new.
+	hand_suit do: [ :each | (single_hands occurrencesOf: each) = 0
+						ifTrue: [ single_hands add: each ]
+				  ].
+	
+	result := OrderedCollection new.
+	single_hands do: [ :each | count := 0.
+					   temp := OrderedCollection new. 
+					   converted_hand reverseDo: [ :card | ((card last)asString = each)
+													ifTrue: [ temp add: card.
+															  count := count + 1.
+															  count = 5
+																ifTrue: [ result add: (temp)asArray.
+																		  result add: 5.
+																		  ^ result
+																		] 
+															]
+												 ].
+					 ]. 
+
+	^ nil
