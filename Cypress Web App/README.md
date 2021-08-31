@@ -223,22 +223,22 @@ requirements are listed below. Any changes made to the specification are highlig
 ## Test Plan
 ---
 ### Introduction:
-    To test the functionality of our Cypress application, our team decided to stick to a
-    simple approach of manually testing each new feature added, alongside regression testing to
-    see if the newly added features do not break the old ones. As our software is user-oriented
-    with most of the functionality available to the user themselves, we believe that this level of
-    manual testing is adequate to ensure the proper functionality of the product. We will be
-    focusing on the important functionalities of the Cypress app, being grouped broadly into the
-    following categories: 
-    User Management and Authentication, Report Creation and Management, and other use cases.
+To test the functionality of our Cypress application, our team decided to stick to a
+simple approach of manually testing each new feature added, alongside regression testing to
+see if the newly added features do not break the old ones. As our software is user-oriented
+with most of the functionality available to the user themselves, we believe that this level of
+manual testing is adequate to ensure the proper functionality of the product. We will be
+focusing on the important functionalities of the Cypress app, being grouped broadly into the
+following categories: 
+User Management and Authentication, Report Creation and Management, and other use cases.
 
-    User Management and Authentication covers the use case classes of system authorization, registering, information change, and logout. These use cases function as intended, with the user information being stored on AWS S3 and PostgreSQL (SQLite only if run locally) database to ensure data is carried over and remembered for the next time the user returns to the web app.
+User Management and Authentication covers the use case classes of system authorization, registering, information change, and logout. These use cases function as intended, with the user information being stored on AWS S3 and PostgreSQL (SQLite only if run locally) database to ensure data is carried over and remembered for the next time the user returns to the web app.
 
-    Report Creation and Management covers the use case classes of creating a report, editing a report, deleting a report, and voting on a report. Similar to before, the information is
-    stored in a database and is accessible through the web app, giving immediate feedback as to what information was successfully logged.
+Report Creation and Management covers the use case classes of creating a report, editing a report, deleting a report, and voting on a report. Similar to before, the information is
+stored in a database and is accessible through the web app, giving immediate feedback as to what information was successfully logged.
 
-    Other use cases contain the smaller functionalities of the application, like the language selection, FAQ questioning, contacting, as well as report resolution and notification. Time
-    permitting, certain features may be included or not.
+Other use cases contain the smaller functionalities of the application, like the language selection, FAQ questioning, contacting, as well as report resolution and notification. Time
+permitting, certain features may be included or not.
 
 ### Feature: Management and Authentication
 ---
