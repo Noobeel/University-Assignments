@@ -1,0 +1,29 @@
+{% extends "system/base.html" %}
+{% block content %}
+    <div class="portal-content">
+        <div class="portal-options">
+            <h4 class="mb-3"> Menu </h4>
+            <div class="links-wrapper">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'profile' %}">Profile Information</a>
+                    <a href="{% url 'report' %}">Report A Problem</a>
+                    <a href="{% url 'report-update' %}">Update My Reports</a>
+                    <a href="{% url 'report-suggest' %}">View All Reports</a>
+                {% else %}
+                    <a href="{% url 'register' %}">Register</a>
+                    <a href="{% url 'login' %}">Login</a>
+                {% endif %}
+                <a href="{% url 'system-contact' %}">Contact Us</a>
+            </div>
+        </div>
+        <div class="portal-display">
+            <p class="motto">Keeping Our City Streets Clean and Safe...</p>
+            {% load static %} <img class="img-fluid w-75 h-75 mx-auto my-auto d-block" src="{% static 'toronto_drawing.jpg' %}" alt="Toronto Skyline Drawing">
+            <p class="about">
+               The Cypress system aims to provide an easier way for residents of Toronto 
+               to report various problems across the city such as potholes and blockages.
+               Register an account with us to report problems and help us keep the city clean and safe!
+            </p>
+        </div>
+    </div>
+{% endblock content %}

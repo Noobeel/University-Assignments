@@ -1,0 +1,25 @@
+{% extends "report/report_list.html" %}
+{% block report_options %}
+    <div style="display: flex;">
+    {% if not report.completed %}
+        <form action="{% url 'report-like' %}" method="POST">
+            {% csrf_token %}
+            <button type="submit"
+                name="report_id"
+                value="{{ report.id }}"
+                class="btn btn-outline-primary">Like</button>
+        </form>
+        {% if user.is_staff and not report.completed %}
+            <form action="{% url 'report-complete' %}" method="POST">
+                {% csrf_token %}
+                <button type="submit"
+                    name="report_id"
+                    value="{{ report.id }}"
+                    class="btn btn-outline-primary">Mark Complete</button>
+            </form>
+        {% endif %}
+    {% else %}
+        <p>The report has been completed and cannot be liked.</p>
+    {% endif %}
+    </div>
+{% endblock report_options %}

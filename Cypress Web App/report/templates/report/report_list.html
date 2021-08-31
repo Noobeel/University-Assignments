@@ -1,0 +1,80 @@
+{% extends "system/base.html" %}
+{% block content %}
+    <div class="reports-wrapper mx-auto" style="width: 100%;height: 100%;">
+        {% for report in reports %}
+        <div class="report" style="width: 65%;height: 65%;padding: 0.5rem 2rem;line-height: 20px;">
+            <div style="padding-bottom: 10px;">
+              <h3 class="report-name">Report#{{ report.id }} by User: {{ report.reporter.username }}</h3>
+              <span><u>Address</u>: </span><span class="report-address">{{ report.address }}</span>
+            </div>
+            <div id="map" class="map-class"></div>
+            <div style="line-height: 2vh;padding-top: 5px;">
+              <p class="report-problem"><u>Problem</u>: {{ report.get_problem_display }}</p>
+              <p class="report-date"><u>Date</u>: {{ report.Creation_Date_and_Time|date:"F d, Y | H:i:s TZ" }}</p>
+              <p class="report-likes"><u>Likes</u>: {{ report.count_likes }}</p>
+              <p class="report-likes"><u>Completed</u>: {{ report.completed }}</p>
+            </div>
+            <!-- Put buttons for likes/edit/delete inside block 'report_options' -->
+              {% block report_options %}{% endblock report_options %}
+        </div>
+        <br><br><br><hr>
+        {% endfor %}
+    </div>
+{% endblock content %}
+
+{% block scripts %}
+    <script 
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCzXbJaMAzeK_a451DA-xZ-2O7zFbJhAVU&callback=initMap&libraries=&v=weekly" 
+        async
+    ></script>
+
+    <script>
+        // Initialize map
+        function initMap() {
+          map_elements_array = [] // Array storing all map elements in report list
+          map_elements = document.getElementsByClassName("map-class"); // Gets all elements with class 'map-class'
+          
+          for(var i=0; i<map_elements.length; i++) { // Loops through each element, creates a map for it and pushes it into array
+                const map = new google.maps.Map(map_elements[i], {
+                    zoom: 8,
+                    center: { lat: 43.6596817, lng: -79.3838966 },
+                });
+                map_elements_array.push(map);
+          }
+
+          const geocoder = new google.maps.Geocoder(); // Create new Geocoder object
+          var elements = document.getElementsByClassName("report-address"); // Get all elements with class 'report-address'
+          
+          for(var i=0; i<elements.length; i++) { // Loop through all elements, send to geocodeLatLng function the geocoder object, map, and element associated with that map
+            geocodeLatLng(geocoder, map_elements_array[i], elements[i]);
+          }
+        }
+  
+        function geocodeLatLng(geocoder, map, element) {
+          const input = element.innerHTML // Get latitude longitude value
+          const latlngStr = input.split(",", 2); // Split string into 2, convert to float
+          const latlng = {
+            lat: parseFloat(latlngStr[0]),
+            lng: parseFloat(latlngStr[1]),
+          };
+         
+          geocoder.geocode({ location: latlng }, (results, status) => { // Gets address and replaces latitude longitude value with it, also sets and focuses on marker, alerts if error present
+            if (status === "OK") {
+              if (results[0]) {
+                map.setZoom(12);
+                const marker = new google.maps.Marker({
+                  position: latlng,
+                  map: map,
+                });
+                map.panTo(marker.getPosition());
+                element.innerHTML = results[0].formatted_address;
+              } else {
+                window.alert("No results found");
+              }
+            } else {
+              window.alert("Geocoder failed due to: " + status);
+            }
+          });
+        }
+    </script>
+{% endblock scripts %}

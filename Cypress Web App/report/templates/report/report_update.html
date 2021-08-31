@@ -1,0 +1,11 @@
+{% extends "report/report_list.html" %}
+{% block report_options %}
+    {% if not report.completed %}
+        <div class="report-update-buttons">
+            <a href="{% url 'report-edit' report.id %}" class="btn btn-outline-primary">Edit</a>
+            <a href="{% url 'report-delete' report.id %}" class="btn btn-outline-danger">Delete</a>
+        </div>
+    {% else %}
+        <p>The report has been completed and cannot be edited or deleted.</p>
+    {% endif %}
+{% endblock report_options %}

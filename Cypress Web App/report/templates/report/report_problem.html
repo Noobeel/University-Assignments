@@ -1,0 +1,124 @@
+{% extends "system/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div style="padding: 1rem 2rem;">
+        <h2>Report A Problem!</h2>
+        <small>Click on the map below to mark a location and choose a problem from the dropdown list</small>
+    </div>
+    <div style="display: flex;height: 100%;padding: 0.1rem 2rem;">
+        <div id="map"></div>
+        <div class="register-content">
+            <span>Address Chosen: </span><br><span id="address-full"></span>
+            <form method="POST">
+                {% csrf_token %}
+                <fieldset class="form-group">
+                    {{ form|crispy }}
+                </fieldset>
+                <div class="btn-options form-group">
+                    <button class="btn btn-outline-primary" type="submit">Report</button>
+                    <a class="btn btn-outline-primary" href="{% url 'system-portal' %}">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock content %}
+{% block scripts %}
+    <script 
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCzXbJaMAzeK_a451DA-xZ-2O7zFbJhAVU&callback=initMap&libraries=&v=weekly" 
+        async
+    ></script>
+
+    <script>
+        var markers = []; // Initialize empty array
+        // Initialize Map
+        function initMap() { 
+            const myLatlng = { lat: 43.6596817, lng: -79.3838966 };  // Define center latitude and longitude
+            const geocoder = new google.maps.Geocoder(); // Initialize Geocoder object
+            const TORONTO_BOUNDS = { // Define Toronto latitude and longitude restrictions
+                north: 43.8212948,
+                south: 43.5939679,
+                west:  -79.6437337,
+                east:  -79.0163347,
+            };
+
+            const map = new google.maps.Map(document.getElementById("map"), { // Create map with restrictions
+                zoom: 4,
+                center: myLatlng,
+                restriction: {
+                        latLngBounds: TORONTO_BOUNDS,
+                        strictBounds: true,
+                },
+                clickableIcons: false
+            });
+
+            let infoWindow = new google.maps.InfoWindow({ // Create the initial InfoWindow
+                content: "Click the map to mark a location!",
+                position: myLatlng,
+            });
+            infoWindow.open(map);
+            
+            // Get elements if present (used in check if report edit or update)
+            var first = document.getElementById("problem-address")
+            var second = document.getElementById("id_address")
+
+            // Check if report being edited, get selected address, convert into fully formated address, and display
+            if(second && second.value) {
+                const input = document.getElementById("id_address").value; // Get latitude longitude value
+                const latlngStr = input.split(",", 2); // Split string into 2, convert to float
+                const latlng = {
+                    lat: parseFloat(latlngStr[0]),
+                    lng: parseFloat(latlngStr[1]),
+                };
+                geocoder.geocode({ location: latlng }, (results, status) => { // Gets address and displays
+                    if (status === "OK") {
+                        if (results[0]) {
+                            (document.getElementById("address-full")).innerHTML = results[0].formatted_address;
+                        }
+                    }
+                });
+            }
+            
+            map.addListener("click", (mapsMouseEvent) => { // Configure the click listener
+                infoWindow.close(); // Close the current InfoWindow
+                if (markers[0]) { // Remove markers if present
+                    for (var i = 0; i < markers.length; i++) {
+                        markers[i].setMap(null);
+                    }
+                    markers = [];
+                }
+                var marker = new google.maps.Marker({ // Create a new marker
+                    position: mapsMouseEvent.latLng,
+                });
+                
+                const input = String(mapsMouseEvent.latLng).slice(1,-1); // Get latitude longitude value
+                const latlngStr = input.split(",", 2); // Split string into 2, convert to float
+                const latlng = {
+                    lat: parseFloat(latlngStr[0]),
+                    lng: parseFloat(latlngStr[1]),
+                };
+                geocoder.geocode({ location: latlng }, (results, status) => { // Gets address and replaces latitude longitude value with it, also sets and focuses on marker, alerts if error present
+                    if (status === "OK") {
+                        if (results[0]) {
+                            if (!results[0].types.includes("administrative_area_level_2") && !results[0].types.includes("political")) { // Check if clicking on water
+                                (document.getElementById("address-full")).innerHTML = results[0].formatted_address;
+
+                                // Check if report being created or edited
+                                if (first) {
+                                    first.value = String(mapsMouseEvent.latLng).slice(1,-1);  // Get latitude and longitude and place in address field
+                                } else if (second) {
+                                    second.value = String(mapsMouseEvent.latLng).slice(1,-1); // Get latitude and longitude and place in address field
+                                }
+                                // Add marker to array and map
+                                markers.push(marker);
+                                marker.setMap(map);
+                            }
+                            else {
+                                alert("There are no roads, trees, or property on water 😠");
+                            }
+                        }
+                    }
+                });
+            });
+        }
+    </script>
+{% endblock scripts %}

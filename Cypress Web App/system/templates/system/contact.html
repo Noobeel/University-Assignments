@@ -1,0 +1,29 @@
+{% extends "system/base.html" %}
+{% block content %}
+    <div class="contact-content">
+        <div class="accordian" id="contacts-accordian">
+            {% for contact in contacts %}
+            {% with index=forloop.counter|stringformat:"s" %}
+            <div class="card">
+                {% with heading="heading"|add:index %}
+                {% with collapse="collapse"|add:index %}
+                <div class="card-header" id="{{ heading }}">
+                    <h2>
+                        <button class="btn-link btn collapsed" type="button" data-toggle="collapse" data-target="#{{ collapse }}" aria-expanded="false" aria-controls="{{ collapse }}">{{ contact.name }}</button>
+                    </h2>
+                </div>
+                <div class="collapse" id="{{ collapse }}" aria-labelledby="{{ heading }}" data-parent="#contacts-accordian">
+                    <div class="card-body">
+                        <span class="d-block">Email: {{ contact.email }}</span>
+                        <span class="d-block">Phone Number: {{ contact.phone_number }}</span>
+                        <span class="d-block">Office Hours: {{ contact.office_hours }}</span>
+                    </div>
+                </div>
+                {% endwith %}
+                {% endwith %}
+            </div>
+            {% endwith %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}

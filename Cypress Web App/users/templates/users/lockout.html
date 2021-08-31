@@ -1,0 +1,9 @@
+{% extends "system/base.html" %}
+{% block content %}
+    <div class="lockout-content">
+        <h2>Your account has been locked for 5 minutes due to 3 failed login attempts! Please try again later.</h2>
+        <div class="btn-options form-group">
+            <a class="btn btn-outline-primary" href="{% url 'login' %}">Login Again</a>
+        </div>
+    </div>
+{% endblock content %}

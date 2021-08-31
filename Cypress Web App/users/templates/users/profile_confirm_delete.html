@@ -1,0 +1,16 @@
+{% extends "system/base.html" %}
+{% block content %}
+    <div class="profile-delete-content">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="mb-3">Delete Profile</legend>
+                <p>Are you sure you want to delete your profile?</p>
+            </fieldset>
+            <div class="btn-options form-group">
+                <button class="btn btn-outline-danger" type="submit">Delete</button>
+                <a class="btn btn-outline-primary" href="{% url 'profile' %}">Cancel</a>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

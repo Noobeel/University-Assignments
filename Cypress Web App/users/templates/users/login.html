@@ -1,0 +1,26 @@
+{% extends "system/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    {% if user.is_authenticated %}
+        <meta http-equiv="REFRESH" content="0;url={% url 'system-portal' %}">
+    {% endif %}
+    <div class="login-content">
+        <form class="login-form" method="post">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="login-legend mb-3">You are currently at the Cypress Login Page. By logging into this system, you will be able to report a variety of problems as you have witnessed on the streets of Toronto.</legend>
+                {{ form|crispy }}
+            </fieldset>
+            <div class="btn-options form-group">
+                <button class="btn btn-outline-primary" type="submit">Login</button>
+                <a class="btn btn-outline-primary" href="{% url 'system-portal' %}">Cancel</a><br>
+                <small class="text-muted">
+                    Forgot your password? <a href="{% url 'password_reset' %}">Reset here</a>
+                </small><br>
+                <small class="text-muted">
+                    Dont have an account? <a href="{% url 'register' %}">Register now!</a>
+                </small>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

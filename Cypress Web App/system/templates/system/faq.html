@@ -1,0 +1,282 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap Styles -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- Custom Styles -->
+    <link href="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'system/main.css' %}">
+
+    <title>Cypress - FAQ</title>
+    <style media="screen">
+      *,
+      *::before,
+      *::after{
+        margin: 0;
+        padding: 0;
+        box-sizing: inherit;
+      }
+
+      html{
+        font-size: 10px;
+        box-sizing: border-box;
+        scroll-behavior: smooth;
+      }
+
+      section{
+        width: 100%;
+        max-width: 100rem;
+        height: 100vh;
+        background-color: white;
+        margin: 0 auto;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .container{
+        width: 90%;
+        max-width: 200rem;
+        margin: auto;
+        padding: 0 1.5rem;
+      }
+
+      .cypress-item{
+        background-color: #f5f6f7;
+        border-radius: .4rem;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        letter-spacing: .065em;
+        font-kerning: none;
+        -webkit-font-smoothing: antialiased;
+        box-shadow: .5rem 2px .5rem rgba(0,0,0,.2);
+        cursor: pointer;
+      }
+
+      .cypress-link{
+        font-size: 1.8rem;
+        color: black;
+        background-color: #f5f6f7;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 0;
+      }
+
+      .cypress-link i{
+        color: red;
+        padding: .5rem;
+      }
+
+      .cypress-link .ion-md-remove {
+        display: none;
+      }
+
+      .answer{
+        max-height: 0;
+        overflow: hidden;
+        position: relative;
+        background-color: #d4d6d7;
+        transition-duration: 0.6s;
+      }
+
+      .answer::before{
+        content: "";
+        position: absolute;
+        width: .6rem;
+        height: 90%;
+        top: 50%;
+        left: 0;
+        transform: translateY(0%);
+      }
+
+      .answer p{
+        color: black;
+        font-size: 1.4rem;
+        padding: 1.5rem;
+      }
+
+      .cypress-item:target .answer{
+        max-height: 20rem;
+      }
+
+      .header {
+        display: flex;
+        font-size: 2.5rem;
+        padding: .75rem 2rem;
+        width: 22%;
+        justify-content: space-between;
+      }
+
+      .cof {
+        width: 77%;
+        display: flex;
+        justify-content: flex-end;
+        padding: .75rem 2rem;
+        font-size: 2.6rem;
+        float: right;
+        margin-top: -52px;
+        font-weight: bold;
+      }
+
+      .faqs {
+        font-size: 3rem;
+        padding: 2rem;
+        position: relative;
+        max-width: 100rem;
+        width: 100%;
+        font-weight: bold;
+        text-align: center;
+        margin: auto;
+      }
+    </style>
+  </head>
+<body>
+  <div class="header">
+    <!-- Go back to the main page. -->
+    <a href="{% url 'system-portal' %}">CYPRESS</a>
+    {% if user.is_authenticated %}
+      <a class="ml-3" href="{% url 'logout' %}">LOGOUT</a>
+    {% endif %}
+  </div>
+  <span class="cof">City of Toronto</span>
+  <hr>
+  <div class="faqs" >
+    FAQ
+  </div>
+  <section>
+    <div class="container">
+      <div class="cypress">
+        <div class="cypress-item" id = "question1">
+            <a class="cypress-link" href="#question1" style="text-decoration: none">
+              What does Cypress stand for and what is its purpose?
+            </a>
+          <div class="answer">
+            <p>
+              City of Toronto Problem Reporting and Solution System.<br><br>
+              CYPRESS is built for people who value their environment and want to make it a better and safer place for others. 
+              The Cypress system is designed to allow citizens to report problems that concern them about their city that
+              they notice on the streets.
+            </p>
+          </div>
+        </div>
+
+        <div class="cypress-item" id = "question2">
+          <a class="cypress-link" href="#question2" style="text-decoration: none">
+            How do I contact Cypress?
+          </a>
+          <div class="answer">
+            <p>
+              On our portal page, there is a link labelled Contact Us. Click on it and you will be directed to a page with our contact details. 
+              You can choose from the provided contact details on how you would like to reach us.<br><br>
+              <a href="{% url 'system-contact' %}">Click here for contact details.</a>
+            </p>
+          </div>
+        </div>
+
+        <div class="cypress-item" id = "question3">
+          <a class="cypress-link" href="#question3" style="text-decoration: none">
+              How do I tell if the problem I have reported has been completed?
+          </a>
+          <div class="answer">
+            <p>
+              You will be required to subscribe to completion notification when submitting a report.
+              CYPRESS will notify you when the city completes your report through the email address provided.
+            </p>
+          </div>
+        </div>
+
+        <div class="cypress-item" id = "question4">
+          <a class="cypress-link" href="#question4" style="text-decoration: none">
+            I accidentally submitted a report with the wrong address. Can I edit a submitted report?
+          </a>
+          <div class="answer">
+            <p>
+              Make sure you are logged in to the account used to create the report. On the portal page, click on 'Update My Reports'. 
+              A new page with all your reports will open up. Click on the edit button below each report to edit that report. Once a report is completed, it cannot be edited.
+            </p>
+          </div>
+        </div>
+
+        <div class="cypress-item" id = "question5">
+          <a class="cypress-link" href="#question5" style="text-decoration: none">
+            When will work on my submitted report start?
+          </a>
+          <div class="answer">
+            <p>
+              Please allow up to 5 business days for the city to fully process your report.
+            </p>
+          </div>
+        </div>
+
+        <div class="cypress-item" id = "question6">
+          <a class="cypress-link" href="#question6" style="text-decoration: none">
+              I would like to delete my report. How would I do that?
+          </a>
+          <div class="answer">
+            <p>
+              Make sure you are logged in to the account used to create the report. On the portal page, click on 'Update My Reports'. 
+              A new page with all your reports will open up. Click on the delete button below each report to delete that report.
+              You will be prompted to confirm deletion of that report. Once a report is completed, it cannot be deleted.
+            </p>
+          </div>
+        </div>
+
+        <div class="cypress-item" id = "question7">
+          <a class="cypress-link" href="#question7" style="text-decoration: none">
+            Can I report a problem outside Toronto?
+          </a>
+          <div class="answer">
+            <p>
+              Unfortunately, no. The CYPRESS system is designed only for the residents of Toronto.
+            </p>
+          </div>
+        </div>
+
+        <div class="cypress-item" id = "question8">
+          <a class="cypress-link" href="#question8" style="text-decoration: none">
+            Can I delete my profile?
+          </a>
+          <div class="answer">
+            <p>
+              Yes, you can. Login to your account and click the 'Profile Information' button on the portal page. 
+              You will be redirected to your profile page where you can edit your personal information or profile picture.
+              Additionally, you can also delete your profile.
+            </p>
+          </div>
+        </div>
+
+        <div class="cypress-item" id = "question9">
+          <a class="cypress-link" href="#question9" style="text-decoration: none">
+            How do I report a problem on CYPRESS?
+          </a>
+          <div class="answer">
+            <p>
+              Login to your account or register for one if you haven't already. On the portal page, click on 'Report A Problem'.
+              You will be redirected to the report page where you can click on an interactive map to specify the location of the problem.
+              You will also be prompted to select a problem from a number of options and to subscribe to email notifications.
+            </p>
+          </div>
+        </div>
+
+        <div class="cypress-item" id = "question10">
+          <a class="cypress-link" href="#question10" style="text-decoration: none">
+            If the problem I need to report is not listed among the options provided on the report page, what should I do?
+          </a>
+          <div class="answer">
+            <p>
+              Please find our contact information on the Contact Us page. You can send us the problem through email or you can go to the nearest
+              City of Toronto office to report a problem.
+            </p>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+  </body>
+</html>

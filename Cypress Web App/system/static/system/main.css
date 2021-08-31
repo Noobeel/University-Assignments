@@ -1,0 +1,163 @@
+html, body {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+h1 {
+    font-size: 3rem;
+}
+
+header {
+    display: flex ;
+    font-size: 1.5rem ;
+    justify-content: space-between ;
+    padding: .75rem 2rem ;
+    width: 100% ;
+}
+
+hr {
+    margin: 0 auto;
+    width: 95.5%;
+}
+
+footer {
+    align-items: flex-end;
+    display: flex;
+    flex-direction: column;
+    font-size: 1.5rem;
+    padding: 0 2rem 2rem 0;
+}
+
+.main-wrapper {
+    align-items: center;
+    display: flex;
+    height: 87.5vh;
+    width: 100vw;
+}
+
+.main-content {
+    text-align: center;
+    margin: auto;
+}
+
+.lang-btn-wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 auto;
+    width: 12.5%;
+}
+
+.lang-btn {
+    font-size: .9rem;
+}
+
+.portal-content {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: 1fr;
+    padding: 2rem;
+    padding-bottom: 0;
+}
+
+.portal-options {
+    margin-right: auto;
+    width: auto;
+}
+
+.links-wrapper a {
+    font-size: 1.2rem;
+    display: block;
+}
+
+.links-wrapper a:not(:last-child) {
+    margin-bottom: .5rem;
+}
+
+.portal-display {
+    margin: 0;
+}
+
+.motto {
+    font-size: 1.2rem;
+    font-weight: bolder;
+    text-align: center;
+}
+
+.about {
+    text-align:center; 
+    font-size: 1.1rem; 
+    margin: auto; 
+    display: block; 
+    padding-top: 10px;
+}
+
+.register-content {
+    padding: 2rem;
+    padding-bottom: 0;
+}
+
+.login-content, .reset-content {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+    padding-bottom: 0;
+}
+
+.login-form, .reset-form {
+    width: 60%;
+}
+
+.logout-content, .lockout-content, .report-delete-content, .profile-delete-content {
+    display: inline-block;
+    justify-content: center;
+    padding: 2rem;
+    padding-bottom: 0;
+    width: 50%;
+}
+
+.profile-options {
+    margin-right: auto;
+}
+
+.profile-content {
+    display: grid;
+    grid-template-columns: 30% 70%;
+    grid-template-rows: 1fr;
+    justify-items: center;
+    padding: 2rem;
+}
+
+.profile-form {
+    padding-left: 2rem;
+    width: 90%;
+}
+
+.user-info {
+    font-size: 0.9rem;
+}
+
+.contact-content {
+    padding: 2rem;
+}
+
+#myBtn {
+    display: block;
+    position: fixed;
+    bottom: 8px;
+    right: 8px;
+    z-index: 99;
+    font-size: 18px;
+    font-weight: bolder;
+    border: none;
+    outline: none;
+    background-color: #323232;
+    color: white;
+    padding: 9px;
+    border-radius: 4px;
+}
+
+#map {
+    height: 60%;
+    width: 60%;
+}
