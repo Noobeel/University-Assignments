@@ -3,14 +3,14 @@
 ## Run Program
 ---
 ```
-python a2.py
+python crossword.py
 ```
 
 ## Description
 ---
 This program converts a list of words as strings into a 20 x 20 matrix of characters (strings of length 1) that contains a crossword puzzle with these words.
 
-There are multiple ways to build a crossword puzzle from the given list of words; many different outputs can be correct for the same list of words.
+There are multiple ways to build a crossword puzzle from the given list of words; many different outputs can be correct for the same list of words. The program goes through the list of words only once and any discarded words are not checked again.
 
 A legal placement of a word W has the following properties:
 - All of the word W lies on the 20x20 grid
