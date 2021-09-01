@@ -1,4 +1,4 @@
-<h1 align="center"> Poker Dealer </h1>
+<h1 align="center"> Poker Hand Evaluation </h1>
 
 ## Description
 ---
