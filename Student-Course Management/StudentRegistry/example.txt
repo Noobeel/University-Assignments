@@ -1,0 +1,7 @@
+REG JohnOliver 143456
+L
+PSCH
+SCH cPs807 fri
+SCH CPS209 WeD 1500 3
+PSCH
+quit

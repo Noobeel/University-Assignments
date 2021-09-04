@@ -1,0 +1,5 @@
+Computer Science II,CPS209,Learn how to write complex programs!,3Lec 2Lab,W2020
+Computer Graphics,CPS511,Learn how to write cool graphics programs,3Lec,F2020
+Virtual Reality,CPS643,Learn how to write extremely cool virtual reality programs,3Lec 2Lab,W2020
+Computer Networks,CPS706,Learn about Computer Networking,3Lec 1Lab,W2020
+Algorithms,CPS616,Learn about Algorithms,3Lec 1Lab,W2020
