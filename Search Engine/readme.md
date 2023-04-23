@@ -1,8 +1,6 @@
 # Installation and Use
 
-## Note: Some files are not included in the repository since they are over 100MB. Please request them from me directly.
-
---
+**Note: Some files are not included in the repository since they are over 100MB. Please request them from me directly**
 
 This program uses Python with Flask for its backend and vanilla HTML/CSS for its frontend, and is locally hosted.
 
