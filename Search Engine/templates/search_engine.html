@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Search Engine</title>
+		
+		<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+		<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+		<link rel="stylesheet" href="{{ url_for('static', filename='search_engine.css') }}">
+	</head>
+	
+	<body>
+		<div id="container">
+			<div id="page_title">
+				<h1>Search Engine</h1>
+				<span>
+					<b>Made by:</b> <br>
+					Aleksa Grujicic <br>
+					Asgar Ayman <br>
+					Eric Lan <br>
+					Luca Patrizio <br>
+					Mohammad Nabeel Asim Hussain
+				</span>
+			</div>
+			
+			<div id="loader_container">
+				<div id="loader"></div>
+			</div>
+
+			<div id="form_container">
+				<form id="search_form">
+					<input id="search_input_box" type="text" name="query" placeholder="Enter your query...">
+					<input id="search_button" type="submit" name="submit" value="Search">
+				</form>
+			</div>
+
+			<div id="results">
+				<!-- Results will be displayed here -->
+			</div>
+			<br>
+		</div>
+	</body>
+
+	<script>
+		function getData(form) {
+			var formData = new FormData(form);
+
+			const query = formData.get('query').toLowerCase();
+
+			blockPage();
+			
+			fetch(`http://localhost:5000/search?query=${query}`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json'
+					}
+				})
+					.then(response => response.json())
+					.then(data => {
+						showPage();
+						displayResults(data['time'], data['result']);
+					});
+		}
+
+		document.getElementById("search_form").addEventListener("submit", function (e) {
+			e.preventDefault();
+			getData(e.target);
+		});
+
+		function blockPage() {
+			document.getElementById("search_form").style.display = "none";
+			document.getElementById("results").style.display = "none";
+			document.getElementById("loader").style.display = "block";
+		}
+
+		function showPage() {
+			document.getElementById("loader").style.display = "none";
+			document.getElementById("search_form").style.display = "block";
+			document.getElementById("results").style.display = "block";
+		}
+
+		function displayResults(search_time_seconds, response) {
+			const results = document.getElementById('results');
+			results.innerHTML = '';
+
+			if (response.length == 0) {
+				const div_no_result = document.createElement('div');
+				div_no_result.innerHTML = 'No results found';
+
+				results.appendChild(div_no_result);
+			} else {
+				search_time = new Date(search_time_seconds * 1000).toISOString().substring(17, 22)
+			
+				const div_time = document.createElement('div');
+				div_time.innerHTML = `<h2>Search time: ${search_time} seconds</h2>`;
+				results.appendChild(div_time);
+
+				const div_graph = document.createElement('div');
+
+				div_graph.innerHTML = `
+					<a href="./static/document_score_graph.png" alt="Document-Score Graph" target="_blank">Click here for the document-score graph</a>
+				`;
+				
+				results.appendChild(div_graph);
+
+				response.forEach(result => {
+					const div_documents = document.createElement('div');
+					
+					div_documents.innerHTML = `
+						<h2> Title: ${result[1][1]} </h2>
+						<h3> Document ID: ${result[0]} </h3>
+						<p> ${result[1][2]} </p>
+						<hr>
+					`;
+
+					results.appendChild(div_documents);
+				});
+			}
+		}
+
+		document.onload = showPage();
+	</script>
+
+</html>
