@@ -6,3 +6,6 @@ __pycache__
 *.jsonl
 *.jsonl.gz
 *.zip
+corpus_information.json
+postings.json
+*.npy
