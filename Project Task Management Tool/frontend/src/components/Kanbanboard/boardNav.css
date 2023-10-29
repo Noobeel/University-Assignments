@@ -1,0 +1,50 @@
+.kbcontainer{
+    height:100%;
+    background-color: #CBC3E3;
+    color:white;
+    display:block;
+    position: relative;
+    height:100%;
+    
+
+    
+}
+
+.Kbnav{
+    background-color: 	#702963;
+    width:90%;
+    height:100%;
+    float:left;
+    margin-right:300px;
+    text-align: center;
+    border-radius:10px;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    flex-direction: column;
+    
+   
+    
+}
+
+.Kbnav li{ 
+    margin-top:5px;
+    padding-bottom: 37px;
+    padding-top:37px;
+    text-align: center;
+    font-weight: bolder;
+    font-size:larger;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    border-radius:10px;
+    
+} 
+
+.Kbnav li:hover{
+    background-color: #20b2aa;
+    width:50%;
+    transition: all 0.5s ease;
+    
+    
+}

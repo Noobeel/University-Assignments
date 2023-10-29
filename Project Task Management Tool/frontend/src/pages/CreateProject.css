@@ -1,0 +1,20 @@
+#email-input {
+    width: "100%";
+    border: "1px solid #eee";
+    padding: "25px";
+    margin: "20px";
+}
+
+input[type="text"]{
+    outline: solid grey;
+    background-color: white;
+    width: 100%;
+    height: auto;
+    color: black;
+}
+
+#noCreate {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}

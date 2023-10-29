@@ -1,0 +1,31 @@
+version: '3.9'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./deploy/Dockerfile
+    image: backend:${BACKEND_VERSION:-latest}
+    restart: always
+    env_file:
+    - .env
+    environment:
+      BACKEND_HOST: 0.0.0.0
+      BACKEND_DB_FILE: /db_data/db.sqlite3
+    volumes:
+    - backend-db-data:/db_data/
+
+  migrator:
+    image: backend:${BACKEND_VERSION:-latest}
+    restart: "no"
+    command: alembic upgrade head
+    environment:
+      BACKEND_DB_FILE: /db_data/db.sqlite3
+    volumes:
+    - backend-db-data:/db_data/
+
+
+
+volumes:
+  backend-db-data:
+    name: backend-db-data

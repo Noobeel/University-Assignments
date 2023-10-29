@@ -1,0 +1,54 @@
+#container {
+    position: relative;
+    padding-bottom: 30px;
+    padding-top: 30px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+input[type=text] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    background-color: 07074d;
+    color:white;
+    border: 4px white;
+    border-radius: 8px;
+    
+  }
+
+.save-btn {
+    text-align: center;
+    font-size: 16px;
+    border-radius: 6px;
+    padding: 14px 64px;
+    border: none;
+    font-weight: 600;
+    background-color: #6a64f1;
+    color: white;
+    cursor: pointer;
+    margin-bottom: 10px;
+    margin-top: 20px;
+  }
+
+
+  #setting-title {
+    font-size: 15pt;
+    font-weight: bolder;
+    color: #07074d;
+    margin-bottom: 10px;
+    margin-top: 20px;
+  }
+
+#manage-team ul {
+}
+
+#manage-team li {
+}
+
+#manage-team  li:hover {
+}
